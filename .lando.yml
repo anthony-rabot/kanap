@@ -1,0 +1,11 @@
+name: kanap
+services:
+  node:
+    type: node:16
+    ports:
+      - 3000:3000
+tooling:
+  npm:
+    service: node
+  node:
+    service: node
