@@ -1,5 +1,5 @@
-const params = (new URL(document.location)).searchParams;
-let productId = params.get('id');
+const params = (new URL(document.location)).searchParams
+let productId = params.get('id')
 
 fetch('http://localhost:3000/api/products/' + productId, {
     method: "GET",
@@ -9,7 +9,7 @@ fetch('http://localhost:3000/api/products/' + productId, {
 })
     .then(result => {
         if (result.ok) {
-            return result.json();
+            return result.json()
         }
     })
     .then(
@@ -31,7 +31,7 @@ const displayProduct = (product) => {
     const image = document.createElement('img')
     image.src = product.imageUrl
     image.alt = product.altTxt
-    imageParent[0].appendChild(image);
+    imageParent[0].appendChild(image)
 
     // Create Title
     const titleParent = document.getElementById('title')
@@ -53,9 +53,20 @@ const displayProduct = (product) => {
         const colorOption = document.createElement('option')
         colorOption.value = color.toLowerCase()
         colorOption.text = color.toLowerCase()
-        colorsParent.add(colorOption, null);
+        colorsParent.add(colorOption, null)
     }
 }
 
 // TODO gérer l'event du clic sur le bouton ajouter au panier
-// TODO Construire l'objet à envoyer à l'API (récupérer la couleur)
+// TODO Le Panier doit être stocké je ne sais pas encore comment (LocalStorage ?) -> notion que je ne connais pas encore à part de nom
+
+const cartButton = document.getElementById('addToCart')
+cartButton.addEventListener('click', (evt) => {
+    console.log(evt)
+
+    // TODO Vérifier le formulaire
+    // Est-ce qu'une quantité est valide (> 0)
+    // Est-ce qu'une couleur a été choisie
+    // Voir les infos attendues sur la page panier
+
+})
