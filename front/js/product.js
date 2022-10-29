@@ -27,11 +27,35 @@ const displayProduct = (product) => {
     console.log(product)
 
     // Create Image
-    let imageParent = document.getElementsByClassName('item__img')
-    let image = document.createElement('img')
+    const imageParent = document.getElementsByClassName('item__img')
+    const image = document.createElement('img')
     image.src = product.imageUrl
     image.alt = product.altTxt
     imageParent[0].appendChild(image);
 
+    // Create Title
+    const titleParent = document.getElementById('title')
+    titleParent.textContent = product.name
 
+    // Create Price
+    const priceParent = document.getElementById('price')
+    priceParent.textContent = product.price
+
+    // Create Description
+    const descriptionParent = document.getElementById('description')
+    descriptionParent.textContent = product.description
+
+    // Create Color(s) (select options)
+    const colorsParent = document.getElementById('colors')
+
+    for (const color of product.colors) {
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/add
+        const colorOption = document.createElement('option')
+        colorOption.value = color.toLowerCase()
+        colorOption.text = color.toLowerCase()
+        colorsParent.add(colorOption, null);
+    }
 }
+
+// TODO gérer l'event du clic sur le bouton ajouter au panier
+// TODO Construire l'objet à envoyer à l'API (récupérer la couleur)
