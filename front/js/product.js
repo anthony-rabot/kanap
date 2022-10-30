@@ -61,12 +61,30 @@ const displayProduct = (product) => {
 // TODO Le Panier doit être stocké je ne sais pas encore comment (LocalStorage ?) -> notion que je ne connais pas encore à part de nom
 
 const cartButton = document.getElementById('addToCart')
-cartButton.addEventListener('click', (evt) => {
-    console.log(evt)
+cartButton.addEventListener('click', (event) => {
+    console.log(event)
+    event.preventDefault()
 
-    // TODO Vérifier le formulaire
-    // Est-ce qu'une quantité est valide (> 0)
-    // Est-ce qu'une couleur a été choisie
+    if (validateProductForm()) {
+        // addProductToCart(product)
+        console.log('form ok')
+    }
+
     // Voir les infos attendues sur la page panier
 
 })
+
+/**
+ * Validate product Form to allow adding Product to Cart
+ */
+const validateProductForm = () => {
+    const colorsParent = document.getElementById('colors')
+    const quantity = document.getElementById('quantity')
+
+    // https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
+    // Pas appliqué sur le szlect car le HTML ne contient pas de contrainte
+
+    // Retourne vrai si une couleur a été choisie et si le champ quantité respecte le min et le max
+    return colorsParent.value !== "" && quantity.checkValidity()
+
+}
