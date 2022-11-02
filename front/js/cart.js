@@ -50,11 +50,29 @@ const displayProductCartLine = (product) => {
 let updateQuantity = (event) => {
     let newQuantity = event.target.value
 
-    // Récupérer l'id du produit concerné
+    // Update DOM element
+    if (newQuantity >= 100) {
+        event.target.setAttribute('value', 100)
+    } else {
+        event.target.setAttribute('value', newQuantity)
+    }
+
+    // Get Id and color of product objet to update
     let productId = event.target.closest('article').getAttribute('data-id')
     let productColor = event.target.closest('article').getAttribute('data-color')
-    console.log(productId)
-    console.log(productColor)
+
+    // Load localStorage to find it
+    let cart = getLocalStorage()
+    let productToUpdate = cart.find( product => product.id === productId && product.color === productColor)
+
+    // Update quantity and save (
+    if (newQuantity >= 100) {
+        productToUpdate.quantity = 100
+    } else {
+        productToUpdate.quantity = Number(newQuantity)
+    }
+
+    localStorage.setItem('orders', JSON.stringify(cart))
 }
 
 /**
@@ -78,8 +96,8 @@ if (cart.length > 0) {
 let inputsQuantity = document.querySelectorAll('.itemQuantity')
 
 inputsQuantity.forEach((item) => {
-        item.addEventListener('change', updateQuantity)
-    });
+    item.addEventListener('change', updateQuantity)
+});
 
 
 
