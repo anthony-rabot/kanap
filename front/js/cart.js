@@ -50,29 +50,47 @@ const displayProductCartLine = (product) => {
 let updateQuantity = (event) => {
     let newQuantity = event.target.value
 
-    // Update DOM element
-    if (newQuantity >= 100) {
-        event.target.setAttribute('value', 100)
-    } else {
-        event.target.setAttribute('value', newQuantity)
-    }
-
     // Get Id and color of product objet to update
-    let productId = event.target.closest('article').getAttribute('data-id')
-    let productColor = event.target.closest('article').getAttribute('data-color')
+    let domProduct = event.target.closest('article')
+    let productId = domProduct.dataset.id
+    let productColor = domProduct.dataset.color
 
     // Load localStorage to find it
     let cart = getLocalStorage()
     let productToUpdate = cart.find( product => product.id === productId && product.color === productColor)
 
-    // Update quantity and save (
+    // Update DOM element and localStorage
     if (newQuantity >= 100) {
-        productToUpdate.quantity = 100
+        event.target.setAttribute('value', 100) // DOM
+        productToUpdate.quantity = 100 // localStorage
     } else {
+        event.target.setAttribute('value', newQuantity)
         productToUpdate.quantity = Number(newQuantity)
     }
 
+    // Save localStorage
     localStorage.setItem('orders', JSON.stringify(cart))
+}
+
+/**
+ * Delete product
+ * @param {Event} event - Event of click listener on Delete item
+ */
+let deleteItem = (event) => {
+
+    // Get Id and color of product objet to delete
+    let domProduct = event.target.closest('article')
+    let productId = domProduct.dataset.id
+    let productColor = domProduct.dataset.color
+
+    // Load localStorage to find it and exclude it with filter()
+    let cart = getLocalStorage()
+    let productToDelete = cart.find( product => product.id === productId && product.color === productColor)
+    let filteredCart = cart.filter(product => product !== productToDelete)
+
+    // Remove from DOM and save to localStorage
+    domProduct.remove()
+    localStorage.setItem('orders', JSON.stringify(filteredCart))
 }
 
 /**
@@ -99,11 +117,12 @@ inputsQuantity.forEach((item) => {
     item.addEventListener('change', updateQuantity)
 });
 
+/**
+ * Listen click events on delete element
+ */
 
+let deleteItems = document.querySelectorAll('.deleteItem')
 
-
-//
-// function updateQuantity(event) {
-//     let newQuantity = event.target.value
-//     console.log(newQuantity)
-// }
+deleteItems.forEach((item) => {
+    item.addEventListener('click', deleteItem)
+});
