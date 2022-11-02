@@ -77,6 +77,7 @@ cartButton.addEventListener('click', (event) => {
 
 /**
  * Validate product Form to allow adding order to Cart
+ * @return {boolean} True if form is valid with quantity > 0 and a color chosen
 */
 const validateProductForm = () => {
     // https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
@@ -88,13 +89,13 @@ const validateProductForm = () => {
 
 /**
  * Get LocalStorage
+ * @return {Array} Empty if LocalStorage is not initialised or with products objects
 */
 let getLocalStorage = () => {
     let ordersInLocalStorage = localStorage.getItem("orders")
 
     return ordersInLocalStorage != null ? JSON.parse(ordersInLocalStorage) : []
 }
-
 
 /**
  * Add product to Cart or update quantity if already present (LocalStorage)
