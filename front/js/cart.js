@@ -74,9 +74,9 @@ let updateQuantity = (event) => {
 
 /**
  * Delete product
- * @param {Event} event - Event of click listener on Delete item
+ * @param {Event} event - Event of click listener on Delete text
  */
-let deleteItem = (event) => {
+let removeProduct = (event) => {
 
     // Get Id and color of product objet to delete
     let domProduct = event.target.closest('article')
@@ -124,5 +124,5 @@ inputsQuantity.forEach((item) => {
 let deleteItems = document.querySelectorAll('.deleteItem')
 
 deleteItems.forEach((item) => {
-    item.addEventListener('click', deleteItem)
+    item.addEventListener('click', removeProduct)
 });
