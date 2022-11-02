@@ -23,10 +23,9 @@ fetch('http://localhost:3000/api/products/' + productId, {
 
 /**
  * Parse Product and create HTML tags for displaying it
- * @param {Response} product - Product Object
+ * @param {Object} product - Product Object
 */
 const displayProduct = (product) => {
-    console.log(product)
 
     // Create Image
     const imageParent = document.getElementsByClassName('item__img')
@@ -64,11 +63,14 @@ cartButton.addEventListener('click', (event) => {
     event.preventDefault()
 
     if (validateProductForm()) {
-        if (isProductInCart(productId, colorsParent.value)) {
-            updateCartQuantity()
-        } else {
-            addProductToCart()
+
+        let productToAddInCart = {
+            "id":  productId,
+            "color": colorsParent.value,
+            "quantity": Number(quantity.value)
         }
+
+        addProductToCart(productToAddInCart)
     }
 
     // TODO voir s'il faut générer des erreurs sur les champs en erreur
@@ -87,73 +89,32 @@ const validateProductForm = () => {
 }
 
 /**
- * Add order to Cart
+ * Get LocalStorage
 */
-const addProductToCart = () => {
+let getLocalStorage = () => {
+    let ordersInLocalStorage = localStorage.getItem("orders")
 
-    let ordersLocalStorage = localStorage.getItem('orders')
-    ordersLocalStorage = ordersLocalStorage ? ordersLocalStorage.split(',') : []
-    let cart = []
-    let items = [productId, colorsParent.value, quantity.value]
-    cart.push(items)
-    console.log(cart)
-    ordersLocalStorage.push(cart)
-    localStorage.setItem('orders', ordersLocalStorage.toString());
-
-    //console.log(ordersLocalStorage)
-
-    // Vérifier si le produit est déjà présent dans le panier
-    // if (isProductInCart(productId, colorsParent.value)) {
-    //     const ordersLocalStorage = localStorage.getItem("orders")
-    //     const jsonOrders = JSON.parse(ordersLocalStorage)
-    //     Number(jsonOrders[productId].quantity ++)
-    //
-    //     console.log(jsonOrders[productId].quantity)
-    //     console.log(Number(jsonOrders[productId].quantity))
-    //     localStorage.setItem('orders', JSON.stringify(jsonOrders))
-    // } else {
-    //     let order = {}
-    //     order[productId] = {}
-    //     // order[productId]["color"] = colorsParent.value
-    //     // order[productId]["quantity"] = quantity.value
-    //
-    //     order[productId]["color"] = colorsParent.value
-    //     order[productId]["quantity"] = quantity.value
-    //     localStorage.setItem('orders', JSON.stringify(order))
-    // }
+    return ordersInLocalStorage != null ? JSON.parse(ordersInLocalStorage) : []
 }
 
-/**
- * Add order to Cart
-*/
-const isProductInCart = (id, color) => {
-    // Vérifier si le produit est déjà présent dans le panier
-    const ordersLocalStorage = localStorage.getItem("orders");
-
-    return false
-
-    // if (ordersLocalStorage) {
-    //
-    //     // const jsonOrders = JSON.parse(ordersLocalStorage);
-    //     // // Si l'id du produit est retrouvé dans le tableau renvoyé par Object.keys alors le produit est présent.
-    //     // if (Object.keys(jsonOrders).includes(id)) {
-    //     //
-    //     //     // Retourne true quand le produit de même couleur est déjà présent
-    //     //     return jsonOrders[id].color === color
-    //     //
-    //     // } else {
-    //     //     return false
-    //     // }
-    // }
-
-
-
-
-}
 
 /**
- * Update Quantity for a product already in localStorage
+ * Add product to Cart or update quantity if already present (LocalStorage)
+ * @param {Object} productToAdd - Product Object
 */
-const updateCartQuantity = (id, color) => {
+const addProductToCart = (productToAdd) => {
 
+    let orders = getLocalStorage()
+
+    // Est-ce que le même produit est déjà présent dans le LocalStorage ?
+    const searchProduct = orders.find(product => product.id === productToAdd.id && product.color === productToAdd.color)
+
+    if (searchProduct) {
+        searchProduct.quantity += productToAdd.quantity
+        localStorage.setItem('orders', JSON.stringify(orders))
+    } else {
+        orders.push(productToAdd);
+    }
+
+    localStorage.setItem('orders', JSON.stringify(orders))
 }
