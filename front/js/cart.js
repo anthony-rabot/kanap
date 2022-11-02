@@ -118,7 +118,7 @@ inputsQuantity.forEach((item) => {
 });
 
 /**
- * Listen click events on delete element
+ * Listen click events on delete elements
  */
 
 let deleteItems = document.querySelectorAll('.deleteItem')
