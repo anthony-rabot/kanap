@@ -1,10 +1,10 @@
 const cartContainer = document.getElementById('cart__items')
-let html = ''
+let cartLineHtmlTemplate = ''
 
 /**
  * Get LocalStorage
  * @return {Array} Empty if LocalStorage is not initialised or with products objects
- */
+*/
 let getLocalStorage = () => {
     let ordersInLocalStorage = localStorage.getItem("orders")
 
@@ -14,16 +14,11 @@ let getLocalStorage = () => {
 /**
  * Parse Product and create HTML tags for displaying it on each Cart lines
  * @param {Object} product - Product Object
- */
+*/
 const displayProductCartLine = (product) => {
 
-    console.log(product)
-
-    // Mise en forme de l'attribut data-colors
-    let color = product.color.replace('/', '-').toLowerCase()
-
-    html +=
-    `<article class="cart__item" data-id="${product.id}" data-color="${color}">
+    cartLineHtmlTemplate +=
+    `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
         <div class="cart__item__img">
           <img src="${product.imageUrl}" alt="${product.altTxt}">
         </div>
@@ -45,8 +40,26 @@ const displayProductCartLine = (product) => {
         </div>
       </article>`
 
-    cartContainer.innerHTML = html
+    cartContainer.innerHTML = cartLineHtmlTemplate
 }
+
+/**
+ * Update quantity
+ * @param {Event} event - Event of change listener on Quantity inputs
+*/
+let updateQuantity = (event) => {
+    let newQuantity = event.target.value
+
+    // Récupérer l'id du produit concerné
+    let productId = event.target.closest('article').getAttribute('data-id')
+    let productColor = event.target.closest('article').getAttribute('data-color')
+    console.log(productId)
+    console.log(productColor)
+}
+
+/**
+ * Display Cart lines with localStorage datas
+*/
 
 let cart = getLocalStorage()
 
@@ -58,3 +71,21 @@ if (cart.length > 0) {
     }
 }
 
+/**
+ * Listen change events on quantity inputs
+*/
+
+let inputsQuantity = document.querySelectorAll('.itemQuantity')
+
+inputsQuantity.forEach((item) => {
+        item.addEventListener('change', updateQuantity)
+    });
+
+
+
+
+//
+// function updateQuantity(event) {
+//     let newQuantity = event.target.value
+//     console.log(newQuantity)
+// }
