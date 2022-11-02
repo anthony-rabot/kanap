@@ -65,7 +65,11 @@ cartButton.addEventListener('click', (event) => {
         let productToAddInCart = {
             "id":  productId,
             "color": colorsParent.value,
-            "quantity": Number(quantity.value)
+            "quantity": Number(quantity.value),
+            "name": document.getElementById('title').innerText,
+            "price": Number(document.getElementById('price').innerText),
+            "imageUrl": document.querySelector('.item__img img').getAttribute('src'),
+            "altTxt": document.querySelector('.item__img img').getAttribute('alt')
         }
 
         addProductToCart(productToAddInCart)
