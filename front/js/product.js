@@ -28,30 +28,28 @@ fetch('http://localhost:3000/api/products/' + productId, {
 const displayProduct = (product) => {
 
     // Create Image
-    const imageParent = document.getElementsByClassName('item__img')
-    const image = document.createElement('img')
+    let imageParent = document.getElementsByClassName('item__img')
+    let image = document.createElement('img')
     image.src = product.imageUrl
     image.alt = product.altTxt
     imageParent[0].appendChild(image)
 
     // Create Title
-    const titleParent = document.getElementById('title')
+    let titleParent = document.getElementById('title')
     titleParent.textContent = product.name
 
     // Create Price
-    const priceParent = document.getElementById('price')
+    let priceParent = document.getElementById('price')
     priceParent.textContent = product.price
 
     // Create Description
-    const descriptionParent = document.getElementById('description')
+    let descriptionParent = document.getElementById('description')
     descriptionParent.textContent = product.description
 
     // Create Color(s) (select options)
-    //const colorsParent = document.getElementById('colors')
-
-    for (const color of product.colors) {
+    for (let color of product.colors) {
         // https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/add
-        const colorOption = document.createElement('option')
+        let colorOption = document.createElement('option')
         colorOption.value = color.toLowerCase()
         colorOption.text = color.toLowerCase()
         colorsParent.add(colorOption, null)
