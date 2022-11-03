@@ -114,7 +114,28 @@ function displayProduct(product) {
  */
 function validateProductForm() {
     // https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
-    // Pas appliqué sur le select car le HTML ne contient pas de contrainte
+
+    // Quantity validation
+    const quantityValidationState = quantity.validity
+    if (quantityValidationState.valueMissing) {
+        quantity.setCustomValidity('Vous devez renseigner une quantité')
+    } else if (quantityValidationState.rangeUnderflow) {
+        quantity.setCustomValidity('Vous devez ajouter au moins 1 produit')
+    } else if (quantityValidationState.rangeOverflow) {
+        quantity.setCustomValidity('Vous ne pouvez en commander que 100 au maximum')
+    } else {
+        quantity.setCustomValidity('')
+    }
+
+    // Color validation
+    if (colorsParent.value === "") {
+        colorsParent.setCustomValidity('Vous devez choisir une couleur')
+    } else {
+        colorsParent.setCustomValidity('')
+    }
+
+    quantity.reportValidity()
+    colorsParent.reportValidity()
 
     // Retourne vrai si une couleur a été choisie et si le champ quantité respecte le min et le max
     return colorsParent.value !== "" && quantity.checkValidity()
