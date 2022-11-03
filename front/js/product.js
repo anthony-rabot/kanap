@@ -6,8 +6,7 @@ const quantity = document.getElementById('quantity')
 /**
  * Main function which call API and listen on add to cart action
  */
-
-function main () {
+function main() {
 
     // Call API to get product information with id
 
@@ -40,7 +39,7 @@ function main () {
             let productName = document.getElementById('title').innerText
 
             let productToAddInCart = {
-                "id":  productId,
+                "id": productId,
                 "color": colorsParent.value,
                 "quantity": Number(quantity.value),
                 "name": productName,
@@ -59,10 +58,10 @@ function main () {
  * Display an alter when user add product to cart
  * @param {Object} product - Product Object
  */
-function alertUser (product) {
+function alertUser(product) {
 
     // Format text depends quantity
-    let alertString =''
+    let alertString = ''
 
     if (quantity.value > 1) {
         alertString = `${product.quantity} canapés ${product.name} de couleur ${product.color} ont bien été ajoutés au panier`
@@ -76,8 +75,8 @@ function alertUser (product) {
 /**
  * Parse Product and create HTML tags for displaying it
  * @param {Object} product - Product Object
-*/
-function displayProduct (product) {
+ */
+function displayProduct(product) {
 
     // Create Image
     let imageParent = document.getElementsByClassName('item__img')
@@ -112,8 +111,8 @@ function displayProduct (product) {
 /**
  * Validate product Form to allow adding order to Cart
  * @return {boolean} True if form is valid with quantity > 0 and a color chosen
-*/
-function validateProductForm () {
+ */
+function validateProductForm() {
     // https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
     // Pas appliqué sur le select car le HTML ne contient pas de contrainte
 
@@ -124,8 +123,8 @@ function validateProductForm () {
 /**
  * Get LocalStorage
  * @return {Array} Empty if LocalStorage is not initialised or with products objects
-*/
-function getLocalStorage () {
+ */
+function getLocalStorage() {
     let ordersInLocalStorage = localStorage.getItem("orders")
 
     return ordersInLocalStorage != null ? JSON.parse(ordersInLocalStorage) : []
@@ -134,8 +133,8 @@ function getLocalStorage () {
 /**
  * Add product to Cart or update quantity if already present (LocalStorage)
  * @param {Object} productToAdd - Product Object
-*/
-function addProductToCart (productToAdd) {
+ */
+function addProductToCart(productToAdd) {
 
     let orders = getLocalStorage()
 

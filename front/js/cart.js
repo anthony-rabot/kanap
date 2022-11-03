@@ -4,7 +4,7 @@ let cartLineHtmlTemplate = ''
 /**
  * Get LocalStorage
  * @return {Array} Empty if LocalStorage is not initialised or with products objects
-*/
+ */
 function getLocalStorage() {
     let ordersInLocalStorage = localStorage.getItem("orders")
 
@@ -14,11 +14,11 @@ function getLocalStorage() {
 /**
  * Parse Product and create HTML tags for displaying it on each Cart lines
  * @param {Object} product - Product Object
-*/
-function displayProductCartLine (product) {
+ */
+function displayProductCartLine(product) {
 
     cartLineHtmlTemplate +=
-    `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
+        `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
         <div class="cart__item__img">
           <img src="${product.imageUrl}" alt="${product.altTxt}">
         </div>
@@ -45,9 +45,8 @@ function displayProductCartLine (product) {
 
 /**
  * Calculate total quantity and price. Called on init display, update or remove products
-*/
-
-function calcTotal () {
+ */
+function calcTotal() {
 
     let cart = getLocalStorage()
     let totalQuantity = 0
@@ -73,9 +72,8 @@ function calcTotal () {
 /**
  * Update quantity
  * @param {Event} event - Event of change listener on Quantity inputs
-*/
-
-function updateQuantity (event) {
+ */
+function updateQuantity(event) {
     let newQuantity = event.target.value
 
     // Get Id and color of product objet to update
@@ -85,7 +83,7 @@ function updateQuantity (event) {
 
     // Load localStorage to find it
     let cart = getLocalStorage()
-    let productToUpdate = cart.find( product => product.id === productId && product.color === productColor)
+    let productToUpdate = cart.find(product => product.id === productId && product.color === productColor)
 
     // Update DOM element and localStorage
     if (newQuantity > 100) {
@@ -109,7 +107,7 @@ function updateQuantity (event) {
  * Delete product
  * @param {Event} event - Event of click listener on Delete text
  */
-function removeProduct (event) {
+function removeProduct(event) {
 
     // Get Id and color of product objet to delete
     let domProduct = event.target.closest('article')
@@ -118,7 +116,7 @@ function removeProduct (event) {
 
     // Load localStorage to find it and exclude it with filter()
     let cart = getLocalStorage()
-    let productToDelete = cart.find( product => product.id === productId && product.color === productColor)
+    let productToDelete = cart.find(product => product.id === productId && product.color === productColor)
     let filteredCart = cart.filter(product => product !== productToDelete)
 
     // Remove from DOM and save to localStorage
@@ -133,8 +131,7 @@ function removeProduct (event) {
  * Open a confirmation popup
  * @param {Event} event - Event of click listener on Delete text
  */
-
-function confirmRemove (event) {
+function confirmRemove(event) {
     if (window.confirm("Souhaitez vous vraiment supprimer ce produit ?")) {
         removeProduct(event)
     }
@@ -142,9 +139,8 @@ function confirmRemove (event) {
 
 /**
  * Main function to init cart display and set events on cart update
-*/
-
-function main () {
+ */
+function main() {
 
     // Display Cart lines, Total Quantity and Price with localStorage datas
     let cart = getLocalStorage()

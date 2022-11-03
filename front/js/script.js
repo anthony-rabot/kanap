@@ -1,27 +1,34 @@
-fetch('http://localhost:3000/api/products', {
-    method: "GET",
-    headers: {
-        'Content-Type': 'application/json'
-    }
-})
-    .then(result => {
-        if (result.ok) {
-            return result.json()
+/**
+ * Main function call API to get products information
+ */
+function main() {
+
+    // Call API to get products
+    fetch('http://localhost:3000/api/products', {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json'
         }
     })
-    .then(
-        products => displayProducts(products)
-    )
-    .catch((erreur) => {
-        console.log(`Erreur lors de la récupération des produits avec le message : ${erreur}`)
-    })
+        .then(result => {
+            if (result.ok) {
+                return result.json()
+            }
+        })
+        .then(
+            products => displayProducts(products)
+        )
+        .catch((erreur) => {
+            console.log(`Erreur lors de la récupération des produits avec le message : ${erreur}`)
+        })
+}
 
 
 /**
  * Parse Products and create HTML tags for each one
  * @param {Response} products - Array of products objects
  */
-const displayProducts = (products) => {
+function displayProducts(products) {
 
     const parent = document.getElementById("items")
 
@@ -55,3 +62,5 @@ const displayProducts = (products) => {
         article.appendChild(description)
     }
 }
+
+main()
