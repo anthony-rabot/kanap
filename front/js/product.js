@@ -3,29 +3,77 @@ let productId = params.get('id')
 const colorsParent = document.getElementById('colors')
 const quantity = document.getElementById('quantity')
 
-fetch('http://localhost:3000/api/products/' + productId, {
-    method: "GET",
-    headers: {
-        'Content-Type': 'application/json'
-    }
-})
-    .then(result => {
-        if (result.ok) {
-            return result.json()
+function main () {
+
+    // Call API to get product information with id
+
+    fetch('http://localhost:3000/api/products/' + productId, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json'
         }
     })
-    .then(
-        product => displayProduct(product)
-    )
-    .catch((erreur) => {
-        console.log(`Erreur lors de la récupération du produit avec le message : ${erreur}`)
+        .then(result => {
+            if (result.ok) {
+                return result.json()
+            }
+        })
+        .then(
+            product => displayProduct(product)
+        )
+        .catch((erreur) => {
+            console.log(`Erreur lors de la récupération du produit avec le message : ${erreur}`)
+        })
+
+    // Listen event to add product in cart
+
+    const cartButton = document.getElementById('addToCart')
+    cartButton.addEventListener('click', (event) => {
+        event.preventDefault()
+
+        if (validateProductForm()) {
+
+            let productName = document.getElementById('title').innerText
+
+            let productToAddInCart = {
+                "id":  productId,
+                "color": colorsParent.value,
+                "quantity": Number(quantity.value),
+                "name": productName,
+                "price": Number(document.getElementById('price').innerText),
+                "imageUrl": document.querySelector('.item__img img').getAttribute('src'),
+                "altTxt": document.querySelector('.item__img img').getAttribute('alt')
+            }
+
+            addProductToCart(productToAddInCart)
+            alertUser(productToAddInCart)
+        }
     })
+}
+
+/**
+ * Show an alter when user add product to cart
+ * @param {Object} product - Product Object
+ */
+function alertUser (product) {
+
+    // Format text depends quantity
+    let alertString =''
+
+    if (quantity.value > 1) {
+        alertString = `${product.quantity} canapés ${product.name} de couleur ${product.color} ont bien été ajoutés au panier`
+    } else {
+        alertString = `${product.quantity} canapé ${product.name} de couleur ${product.color} a bien été ajouté au panier`
+    }
+
+    alert(alertString)
+}
 
 /**
  * Parse Product and create HTML tags for displaying it
  * @param {Object} product - Product Object
 */
-const displayProduct = (product) => {
+function displayProduct (product) {
 
     // Create Image
     let imageParent = document.getElementsByClassName('item__img')
@@ -57,37 +105,11 @@ const displayProduct = (product) => {
     }
 }
 
-const cartButton = document.getElementById('addToCart')
-cartButton.addEventListener('click', (event) => {
-    event.preventDefault()
-
-    if (validateProductForm()) {
-
-        let productName = document.getElementById('title').innerText
-
-        let productToAddInCart = {
-            "id":  productId,
-            "color": colorsParent.value,
-            "quantity": Number(quantity.value),
-            "name": productName,
-            "price": Number(document.getElementById('price').innerText),
-            "imageUrl": document.querySelector('.item__img img').getAttribute('src'),
-            "altTxt": document.querySelector('.item__img img').getAttribute('alt')
-        }
-
-        addProductToCart(productToAddInCart)
-        alert(`votre produit ${productName} a bien été ajouté au panier`)
-    }
-
-    // TODO voir s'il faut générer des erreurs sur les champs en erreur
-
-})
-
 /**
  * Validate product Form to allow adding order to Cart
  * @return {boolean} True if form is valid with quantity > 0 and a color chosen
 */
-const validateProductForm = () => {
+function validateProductForm () {
     // https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
     // Pas appliqué sur le select car le HTML ne contient pas de contrainte
 
@@ -99,7 +121,7 @@ const validateProductForm = () => {
  * Get LocalStorage
  * @return {Array} Empty if LocalStorage is not initialised or with products objects
 */
-let getLocalStorage = () => {
+function getLocalStorage () {
     let ordersInLocalStorage = localStorage.getItem("orders")
 
     return ordersInLocalStorage != null ? JSON.parse(ordersInLocalStorage) : []
@@ -109,7 +131,7 @@ let getLocalStorage = () => {
  * Add product to Cart or update quantity if already present (LocalStorage)
  * @param {Object} productToAdd - Product Object
 */
-const addProductToCart = (productToAdd) => {
+function addProductToCart (productToAdd) {
 
     let orders = getLocalStorage()
 
@@ -125,3 +147,6 @@ const addProductToCart = (productToAdd) => {
 
     localStorage.setItem('orders', JSON.stringify(orders))
 }
+
+// Execute main function
+main()

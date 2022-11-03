@@ -5,7 +5,7 @@ let cartLineHtmlTemplate = ''
  * Get LocalStorage
  * @return {Array} Empty if LocalStorage is not initialised or with products objects
 */
-let getLocalStorage = () => {
+function getLocalStorage() {
     let ordersInLocalStorage = localStorage.getItem("orders")
 
     return ordersInLocalStorage != null ? JSON.parse(ordersInLocalStorage) : []
@@ -15,7 +15,7 @@ let getLocalStorage = () => {
  * Parse Product and create HTML tags for displaying it on each Cart lines
  * @param {Object} product - Product Object
 */
-const displayProductCartLine = (product) => {
+function displayProductCartLine (product) {
 
     cartLineHtmlTemplate +=
     `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
@@ -47,7 +47,7 @@ const displayProductCartLine = (product) => {
  * Calculate total quantity and price. Called on init display, update or remove products
 */
 
-let calcTotal = () => {
+function calcTotal () {
 
     let cart = getLocalStorage()
     let totalQuantity = 0
@@ -74,7 +74,8 @@ let calcTotal = () => {
  * Update quantity
  * @param {Event} event - Event of change listener on Quantity inputs
 */
-let updateQuantity = (event) => {
+
+function updateQuantity (event) {
     let newQuantity = event.target.value
 
     // Get Id and color of product objet to update
@@ -108,7 +109,7 @@ let updateQuantity = (event) => {
  * Delete product
  * @param {Event} event - Event of click listener on Delete text
  */
-let removeProduct = (event) => {
+function removeProduct (event) {
 
     // Get Id and color of product objet to delete
     let domProduct = event.target.closest('article')
@@ -129,10 +130,21 @@ let removeProduct = (event) => {
 }
 
 /**
+ * Open a confirmation popup
+ * @param {Event} event - Event of click listener on Delete text
+ */
+
+function confirmRemove (event) {
+    if (window.confirm("Souhaitez vous vraiment supprimer ce produit ?")) {
+        removeProduct(event)
+    }
+}
+
+/**
  * Main function to init cart display and set events on cart update
 */
 
-let main = () => {
+function main () {
 
     // Display Cart lines, Total Quantity and Price with localStorage datas
     let cart = getLocalStorage()
@@ -159,7 +171,7 @@ let main = () => {
     let deleteItems = document.querySelectorAll('.deleteItem')
 
     deleteItems.forEach((item) => {
-        item.addEventListener('click', removeProduct)
+        item.addEventListener('click', confirmRemove)
     })
 }
 
