@@ -56,7 +56,7 @@ function main () {
 }
 
 /**
- * Show an alter when user add product to cart
+ * Display an alter when user add product to cart
  * @param {Object} product - Product Object
  */
 function alertUser (product) {
