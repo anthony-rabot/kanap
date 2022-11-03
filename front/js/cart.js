@@ -44,6 +44,33 @@ const displayProductCartLine = (product) => {
 }
 
 /**
+ * Calculate total quantity and price. Called on init display, update or remove products
+*/
+
+let calcTotal = () => {
+
+    let cart = getLocalStorage()
+    let totalQuantity = 0
+    let totalPrice = 0
+
+    // If there is product objects in localStorage
+    if (cart.length > 0) {
+
+        totalQuantity = cart.reduce((accumulator, product) => {
+            return accumulator + product.quantity
+        }, 0)
+
+        totalPrice = cart.reduce((accumulator, product) => {
+            return accumulator + product.price * product.quantity
+        }, 0)
+    }
+
+    // Display total information
+    document.getElementById('totalQuantity').textContent = totalQuantity.toString()
+    document.getElementById('totalPrice').textContent = totalPrice.toString()
+}
+
+/**
  * Update quantity
  * @param {Event} event - Event of change listener on Quantity inputs
 */
@@ -60,7 +87,8 @@ let updateQuantity = (event) => {
     let productToUpdate = cart.find( product => product.id === productId && product.color === productColor)
 
     // Update DOM element and localStorage
-    if (newQuantity >= 100) {
+    if (newQuantity > 100) {
+        event.target.value = 100
         event.target.setAttribute('value', 100) // DOM
         productToUpdate.quantity = 100 // localStorage
     } else {
@@ -70,6 +98,9 @@ let updateQuantity = (event) => {
 
     // Save localStorage
     localStorage.setItem('orders', JSON.stringify(cart))
+
+    // Update Total
+    calcTotal()
 }
 
 /**
@@ -91,10 +122,13 @@ let removeProduct = (event) => {
     // Remove from DOM and save to localStorage
     domProduct.remove()
     localStorage.setItem('orders', JSON.stringify(filteredCart))
+
+    // Update Total
+    calcTotal()
 }
 
 /**
- * Display Cart lines with localStorage datas
+ * Display Cart lines, Total Quantity and Price with localStorage datas
 */
 
 let cart = getLocalStorage()
@@ -107,6 +141,9 @@ if (cart.length > 0) {
     }
 }
 
+// Calculate Total
+calcTotal()
+
 /**
  * Listen change events on quantity inputs
 */
@@ -115,14 +152,15 @@ let inputsQuantity = document.querySelectorAll('.itemQuantity')
 
 inputsQuantity.forEach((item) => {
     item.addEventListener('change', updateQuantity)
-});
+})
 
 /**
  * Listen click events on delete elements
- */
+*/
 
 let deleteItems = document.querySelectorAll('.deleteItem')
 
 deleteItems.forEach((item) => {
     item.addEventListener('click', removeProduct)
-});
+})
+
