@@ -34,9 +34,10 @@ const displayProduct = (product) => {
     image.alt = product.altTxt
     imageParent[0].appendChild(image)
 
-    // Create Title
+    // Create Title and Header title
     let titleParent = document.getElementById('title')
     titleParent.textContent = product.name
+    document.title = product.name
 
     // Create Price
     let priceParent = document.getElementById('price')
@@ -62,17 +63,20 @@ cartButton.addEventListener('click', (event) => {
 
     if (validateProductForm()) {
 
+        let productName = document.getElementById('title').innerText
+
         let productToAddInCart = {
             "id":  productId,
             "color": colorsParent.value,
             "quantity": Number(quantity.value),
-            "name": document.getElementById('title').innerText,
+            "name": productName,
             "price": Number(document.getElementById('price').innerText),
             "imageUrl": document.querySelector('.item__img img').getAttribute('src'),
             "altTxt": document.querySelector('.item__img img').getAttribute('alt')
         }
 
         addProductToCart(productToAddInCart)
+        alert(`votre produit ${productName} a bien été ajouté au panier`)
     }
 
     // TODO voir s'il faut générer des erreurs sur les champs en erreur

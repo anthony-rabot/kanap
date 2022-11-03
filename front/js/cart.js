@@ -91,6 +91,7 @@ let updateQuantity = (event) => {
         event.target.value = 100
         event.target.setAttribute('value', 100) // DOM
         productToUpdate.quantity = 100 // localStorage
+        alert('Vous ne pouvez pas en commander plus de 100')
     } else {
         event.target.setAttribute('value', newQuantity)
         productToUpdate.quantity = Number(newQuantity)
@@ -128,39 +129,38 @@ let removeProduct = (event) => {
 }
 
 /**
- * Display Cart lines, Total Quantity and Price with localStorage datas
+ * Main function to init cart display and set events on cart update
 */
 
-let cart = getLocalStorage()
+let main = () => {
 
-// If there is product objects in localStorage display them
-if (cart.length > 0) {
+    // Display Cart lines, Total Quantity and Price with localStorage datas
+    let cart = getLocalStorage()
 
-    for (let product of cart) {
-        displayProductCartLine(product)
+    // If there is product objects in localStorage display them
+    if (cart.length > 0) {
+
+        for (let product of cart) {
+            displayProductCartLine(product)
+        }
     }
+
+    // Calculate Total
+    calcTotal()
+
+    // Listen change events on quantity inputs
+    let inputsQuantity = document.querySelectorAll('.itemQuantity')
+
+    inputsQuantity.forEach((item) => {
+        item.addEventListener('change', updateQuantity)
+    })
+
+    // Listen click events on delete elements
+    let deleteItems = document.querySelectorAll('.deleteItem')
+
+    deleteItems.forEach((item) => {
+        item.addEventListener('click', removeProduct)
+    })
 }
 
-// Calculate Total
-calcTotal()
-
-/**
- * Listen change events on quantity inputs
-*/
-
-let inputsQuantity = document.querySelectorAll('.itemQuantity')
-
-inputsQuantity.forEach((item) => {
-    item.addEventListener('change', updateQuantity)
-})
-
-/**
- * Listen click events on delete elements
-*/
-
-let deleteItems = document.querySelectorAll('.deleteItem')
-
-deleteItems.forEach((item) => {
-    item.addEventListener('click', removeProduct)
-})
-
+main()
