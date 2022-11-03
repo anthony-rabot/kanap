@@ -3,6 +3,10 @@ let productId = params.get('id')
 const colorsParent = document.getElementById('colors')
 const quantity = document.getElementById('quantity')
 
+/**
+ * Main function which call API and listen on add to cart action
+ */
+
 function main () {
 
     // Call API to get product information with id
