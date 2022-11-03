@@ -48,8 +48,8 @@ function main() {
                 "altTxt": document.querySelector('.item__img img').getAttribute('alt')
             }
 
-            addProductToCart(productToAddInCart)
-            alertUser(productToAddInCart)
+            let productAdded = addProductToCart(productToAddInCart)
+            alertUser(productAdded)
         }
     })
 }
@@ -153,23 +153,46 @@ function getLocalStorage() {
 
 /**
  * Add product to Cart or update quantity if already present (LocalStorage)
+ * Check for total quantity (has not to exceed 100)
  * @param {Object} productToAdd - Product Object
+ * @return {Object} product - Product Object with real quantity added to display in alert
  */
 function addProductToCart(productToAdd) {
 
     let orders = getLocalStorage()
 
-    // Est-ce que le même produit est déjà présent dans le LocalStorage ?
+    // Search product in localStorage to know if it's already in cart
     const searchProduct = orders.find(product => product.id === productToAdd.id && product.color === productToAdd.color)
 
     if (searchProduct) {
-        searchProduct.quantity += productToAdd.quantity
-        localStorage.setItem('orders', JSON.stringify(orders))
+        let totalQuantity = searchProduct.quantity + productToAdd.quantity
+
+        if (totalQuantity <= 100) {
+            searchProduct.quantity += productToAdd.quantity
+            localStorage.setItem('orders', JSON.stringify(orders))
+
+            return productToAdd
+        } else {
+            alert(`Vous en avez déjà ${searchProduct.quantity} dans votre panier et le maximum est de 100.\nNous en avons ajouté seulement ${100 - searchProduct.quantity}.`)
+
+            // Clone Object to generate alert with real quantity added to have total less or equal to 100
+            let addedProduct = {...searchProduct}
+            addedProduct.quantity = 100 - searchProduct.quantity
+
+            // Update to max quantity and save in localStorage
+            searchProduct.quantity = 100
+            localStorage.setItem('orders', JSON.stringify(orders))
+
+            return addedProduct
+        }
+
     } else {
         orders.push(productToAdd);
     }
 
     localStorage.setItem('orders', JSON.stringify(orders))
+
+    return productToAdd
 }
 
 // Execute main function
