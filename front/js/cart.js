@@ -12,10 +12,36 @@ function getLocalStorage() {
 }
 
 /**
+ * Call API to get price
+ * @param {number} productId Id of product
+ * @return {Object} Product object
+ */
+async function getProduct(productId) {
+
+    return fetch('http://localhost:3000/api/products/' + productId, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(result => {
+            if (result.ok) {
+                return result.json()
+            }
+        })
+        .catch((erreur) => {
+            console.log(`Erreur lors de la récupération du produit avec le message : ${erreur}`)
+        })
+}
+
+/**
  * Parse Product and create HTML tags for displaying it on each Cart lines
  * @param {Object} product - Product Object
  */
-function displayProductCartLine(product) {
+async function displayProductCartLine(product) {
+
+    // Price has to be outside localStorage. Get it form API
+    let productAPI = await getProduct(product.id)
 
     cartLineHtmlTemplate +=
         `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
@@ -26,7 +52,7 @@ function displayProductCartLine(product) {
           <div class="cart__item__content__description">
             <h2>${product.name}</h2>
             <p>${product.color}</p>
-            <p>${product.price} €</p>
+            <p>${productAPI.price} €</p>
           </div>
           <div class="cart__item__content__settings">
             <div class="cart__item__content__settings__quantity">
@@ -46,7 +72,7 @@ function displayProductCartLine(product) {
 /**
  * Calculate total quantity and price. Called on init display, update or remove products
  */
-function calcTotal() {
+async function calcTotal() {
 
     let cart = getLocalStorage()
     let totalQuantity = 0
@@ -59,8 +85,9 @@ function calcTotal() {
             return accumulator + product.quantity
         }, 0)
 
-        totalPrice = cart.reduce((accumulator, product) => {
-            return accumulator + product.price * product.quantity
+        totalPrice = await cart.reduce( async (accumulator, product) => {
+            let productAPI = await getProduct(product.id)
+            return (await accumulator) + productAPI.price * product.quantity
         }, 0)
     }
 
@@ -73,7 +100,7 @@ function calcTotal() {
  * Update quantity
  * @param {Event} event - Event of change listener on Quantity inputs
  */
-function updateQuantity(event) {
+async function updateQuantity(event) {
     let newQuantity = event.target.value
 
     // Get Id and color of product objet to update
@@ -100,14 +127,14 @@ function updateQuantity(event) {
     localStorage.setItem('orders', JSON.stringify(cart))
 
     // Update Total
-    calcTotal()
+    await calcTotal()
 }
 
 /**
  * Delete product
  * @param {Event} event - Event of click listener on Delete text
  */
-function removeProduct(event) {
+async function removeProduct(event) {
 
     // Get Id and color of product objet to delete
     let domProduct = event.target.closest('article')
@@ -124,23 +151,23 @@ function removeProduct(event) {
     localStorage.setItem('orders', JSON.stringify(filteredCart))
 
     // Update Total
-    calcTotal()
+    await calcTotal()
 }
 
 /**
  * Open a confirmation popup
  * @param {Event} event - Event of click listener on Delete text
  */
-function confirmRemove(event) {
+async function confirmRemove(event) {
     if (window.confirm("Souhaitez vous vraiment supprimer ce produit ?")) {
-        removeProduct(event)
+        await removeProduct(event)
     }
 }
 
 /**
  * Main function to init cart display and set events on cart update
  */
-function main() {
+async function main() {
 
     // Display Cart lines, Total Quantity and Price with localStorage datas
     let cart = getLocalStorage()
@@ -149,12 +176,12 @@ function main() {
     if (cart.length > 0) {
 
         for (let product of cart) {
-            displayProductCartLine(product)
+            await displayProductCartLine(product)
         }
     }
 
     // Calculate Total
-    calcTotal()
+    await calcTotal()
 
     // Listen change events on quantity inputs
     let inputsQuantity = document.querySelectorAll('.itemQuantity')
@@ -171,4 +198,4 @@ function main() {
     })
 }
 
-main()
+await main()
