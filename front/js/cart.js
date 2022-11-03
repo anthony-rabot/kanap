@@ -12,11 +12,11 @@ function getLocalStorage() {
 }
 
 /**
- * Call API to get price
+ * Call API to get product information
  * @param {number} productId Id of product
  * @return {Object} Product object
  */
-async function getProduct(productId) {
+function getProduct(productId) {
 
     return fetch('http://localhost:3000/api/products/' + productId, {
         method: "GET",
@@ -85,7 +85,7 @@ async function calcTotal() {
             return accumulator + product.quantity
         }, 0)
 
-        totalPrice = await cart.reduce( async (accumulator, product) => {
+        totalPrice = await cart.reduce(async (accumulator, product) => {
             let productAPI = await getProduct(product.id)
             return (await accumulator) + productAPI.price * product.quantity
         }, 0)
@@ -136,7 +136,7 @@ async function updateQuantity(event) {
  */
 async function removeProduct(event) {
 
-    // Get Id and color of product objet to delete
+    // Get id and color of product objet to delete
     let domProduct = event.target.closest('article')
     let productId = domProduct.dataset.id
     let productColor = domProduct.dataset.color
@@ -162,6 +162,17 @@ async function confirmRemove(event) {
     if (window.confirm("Souhaitez vous vraiment supprimer ce produit ?")) {
         await removeProduct(event)
     }
+}
+
+/**
+ * Validation of contact form
+ */
+function validateContactForm() {
+    console.log('contact form validation')
+    let regexCharacters = /^[a-z]+$/i
+    // let regexAddress =
+
+
 }
 
 /**
@@ -198,4 +209,5 @@ async function main() {
     })
 }
 
-await main()
+main()
+validateContactForm()
