@@ -93,6 +93,7 @@ async function calcTotal() {
 
     // Display total information
     document.getElementById('totalQuantity').textContent = totalQuantity.toString()
+    document.querySelector('.menu nav a:last-child li').textContent = 'Panier (' + totalQuantity.toString() + ')'
     document.getElementById('totalPrice').textContent = totalPrice.toString()
 }
 
