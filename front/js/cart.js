@@ -243,7 +243,8 @@ function sendOrder(datasToSend) {
     return fetch('http://localhost:3000/api/products/order', {
         method: "POST",
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
         },
         body: datasToSend
     })
