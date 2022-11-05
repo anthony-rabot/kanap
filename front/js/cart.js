@@ -177,6 +177,7 @@ function validateContactForm() {
     let contactFormFields = document.querySelectorAll('.cart__order__form__question input')
     let isValid = false
 
+    // Validate each form fields to display custom error messages
     contactFormFields.forEach((field) => {
         validateFormField(field)
 
@@ -205,7 +206,7 @@ function validateFormField(input) {
 
     // Regex rules https://www.programiz.com/javascript/regex
     // Tests made on https://regex101.com/r/YDB9CJ/1
-    let regexCharacters  = new RegExp('^[a-zÀ-ú-\'\\s\\i]+$') // \\i for case insensitive
+    let regexCharacters = new RegExp('^[a-zÀ-ú-\'\\s\\i]+$') // \\i for case insensitive
     let regexAddress = new RegExp('^[a-zÀ-ú0-9,\\-\'\\s\\i]+$') // 6, lotissement de la petite Oie match. \s for whitespaces
     let regexCity = new RegExp('^[a-zÀ-ú\'-\\s\\i]+$')
     let regexMail = new RegExp('[a-z0-9.-]+@[a-z]+\\.[a-z]{2,3}')
@@ -232,6 +233,28 @@ function validateFormField(input) {
         errorMessage.textContent = regexMail.test(input.value) ? '' : "Veuillez saisir un mail valide"
         regexMail.test(input.value) ? input.className = '' : input.className = 'error'
     }
+}
+
+/**
+ * Send Order to API to get back order id
+ * @param {string} datasToSend - JSON datas with contact and products
+ */
+function sendOrder(datasToSend) {
+    return fetch('http://localhost:3000/api/products/order', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: datasToSend
+    })
+        .then(result => {
+            if (result.ok) {
+                return result.json()
+            }
+        })
+        .catch((erreur) => {
+            console.log(`Erreur lors de la récupération du produit avec le message : ${erreur}`)
+        })
 }
 
 /**
@@ -272,17 +295,37 @@ async function main() {
         validateContactForm()
     })
 
-    // If all values are ok so
-    contactForm.addEventListener('submit', (event) => {
+    // If all values are ok, send order to API
+    contactForm.addEventListener('submit', async (event) => {
         event.preventDefault()
         // Form is validated
         if (validateContactForm()) {
-            // passer à la suite
-            console.log('submit')
+
+            // Prepare Datas before send them
+            let contact = {
+                'firstName': document.getElementById('firstName').value,
+                'lastName': document.getElementById('lastName').value,
+                'address': document.getElementById('address').value,
+                'city': document.getElementById('city').value,
+                'email': document.getElementById('email').value
+            }
+
+            let products = cart.map(product => product.id)
+
+            let datasToSend = JSON.stringify({
+                'contact': contact,
+                'products': products
+            })
+
+            // Send request to API and wait for orderId in response
+            let orderResponse = await sendOrder(datasToSend)
+
+            if (orderResponse) {
+                localStorage.clear()
+                window.location.replace("./confirmation.html?order_id=" + orderResponse.orderId);
+            }
         }
-
     })
-
 }
 
 main()
