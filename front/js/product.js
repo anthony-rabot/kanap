@@ -29,7 +29,6 @@ function main() {
         })
 
     // Listen event to add product in cart
-
     const cartButton = document.getElementById('addToCart')
     cartButton.addEventListener('click', (event) => {
         event.preventDefault()
@@ -52,6 +51,8 @@ function main() {
             alertUser(productAdded)
         }
     })
+
+    displayTotalCartQuantity()
 }
 
 /**
@@ -170,6 +171,7 @@ function addProductToCart(productToAdd) {
         if (totalQuantity <= 100) {
             searchProduct.quantity += productToAdd.quantity
             localStorage.setItem('orders', JSON.stringify(orders))
+            displayTotalCartQuantity()
 
             return productToAdd
         } else {
@@ -182,6 +184,7 @@ function addProductToCart(productToAdd) {
             // Update to max quantity and save in localStorage
             searchProduct.quantity = 100
             localStorage.setItem('orders', JSON.stringify(orders))
+            displayTotalCartQuantity()
 
             return addedProduct
         }
@@ -191,8 +194,29 @@ function addProductToCart(productToAdd) {
     }
 
     localStorage.setItem('orders', JSON.stringify(orders))
+    displayTotalCartQuantity()
 
     return productToAdd
+}
+
+/**
+ * Calculate total quantity and display on cart menu item
+ */
+function displayTotalCartQuantity() {
+
+    let cart = getLocalStorage()
+    let totalQuantity = 0
+
+    // If there is product objects in localStorage
+    if (cart.length > 0) {
+
+        totalQuantity = cart.reduce((accumulator, product) => {
+            return accumulator + product.quantity
+        }, 0)
+
+        // Display total information
+        document.querySelector('.menu nav a:last-child li').textContent = 'Panier (' + totalQuantity.toString() + ')'
+    }
 }
 
 // Execute main function
