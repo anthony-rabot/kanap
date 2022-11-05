@@ -1,5 +1,7 @@
 const cartContainer = document.getElementById('cart__items')
 let cartLineHtmlTemplate = ''
+const submitButton = document.getElementById('order')
+const contactForm = document.querySelector('.cart__order__form')
 
 /**
  * Get LocalStorage
@@ -35,7 +37,7 @@ function getProduct(productId) {
 }
 
 /**
- * Parse Product and create HTML tags for displaying it on each Cart lines
+ * Parse Product and create HTML tags for displaying it on each Cart line
  * @param {Object} product - Product Object
  */
 async function displayProductCartLine(product) {
@@ -99,7 +101,7 @@ async function calcTotal() {
 
 /**
  * Update quantity
- * @param {Event} event - Event of change listener on Quantity inputs
+ * @param {Event} event - Change Event on Quantity inputs
  */
 async function updateQuantity(event) {
     let newQuantity = event.target.value
@@ -133,7 +135,7 @@ async function updateQuantity(event) {
 
 /**
  * Delete product
- * @param {Event} event - Event of click listener on Delete text
+ * @param {Event} event - Click Event on Delete text
  */
 async function removeProduct(event) {
 
@@ -157,7 +159,7 @@ async function removeProduct(event) {
 
 /**
  * Open a confirmation popup
- * @param {Event} event - Event of click listener on Delete text
+ * @param {Event} event - Click Event on Delete text
  */
 async function confirmRemove(event) {
     if (window.confirm("Souhaitez vous vraiment supprimer ce produit ?")) {
@@ -167,13 +169,69 @@ async function confirmRemove(event) {
 
 /**
  * Validation of contact form
+ * @return {Boolean} isValid -  Used for submit & click listener on contact form
  */
 function validateContactForm() {
-    console.log('contact form validation')
-    let regexCharacters = /^[a-z]+$/i
-    // let regexAddress =
 
+    // Listen change events on input fields of contact form
+    let contactFormFields = document.querySelectorAll('.cart__order__form__question input')
+    let isValid = false
 
+    contactFormFields.forEach((field) => {
+        validateFormField(field)
+
+        field.addEventListener('change', () => {
+            validateFormField(field)
+        })
+    })
+
+    // Once all fields have been tested, search for error class or empty field
+    for (let formField of contactFormFields) {
+        isValid = !(formField.value === '' || formField.classList.contains('error'))
+
+        if (!isValid) {
+            break
+        }
+    }
+
+    return isValid
+}
+
+/**
+ * Validation of form field
+ * @param {HTMLInputElement} input - Form field
+ */
+function validateFormField(input) {
+
+    // Regex rules https://www.programiz.com/javascript/regex
+    // Tests made on https://regex101.com/r/YDB9CJ/1
+    let regexCharacters  = new RegExp('^[a-zÀ-ú-\'\\s\\i]+$') // \\i for case insensitive
+    let regexAddress = new RegExp('^[a-zÀ-ú0-9,\\-\'\\s\\i]+$') // 6, lotissement de la petite Oie match. \s for whitespaces
+    let regexCity = new RegExp('^[a-zÀ-ú\'-\\s\\i]+$')
+    let regexMail = new RegExp('[a-z0-9.-]+@[a-z]+\\.[a-z]{2,3}')
+
+    let errorMessage = input.nextElementSibling
+
+    // Display error message depend on context and add 'error' class to input when necessary
+    if (input.value === '' && input.required) {
+        errorMessage.textContent = 'Veuillez remplir ce champ'
+        input.className = 'error'
+    } else if (input.id === 'firstName') {
+        errorMessage.textContent = regexCharacters.test(input.value) ? '' : 'Veuillez saisir un prénom valide'
+        regexCharacters.test(input.value) ? input.className = '' : input.className = 'error'
+    } else if (input.id === 'lastName') {
+        errorMessage.textContent = regexCharacters.test(input.value) ? '' : "Veuillez saisir un nom valide"
+        regexCharacters.test(input.value) ? input.className = '' : input.className = 'error'
+    } else if (input.id === 'address') {
+        errorMessage.textContent = regexAddress.test(input.value) ? '' : "Veuillez saisir une adresse valide"
+        regexAddress.test(input.value) ? input.className = '' : input.className = 'error'
+    } else if (input.id === 'city') {
+        errorMessage.textContent = regexCity.test(input.value) ? '' : "Veuillez saisir une ville valide"
+        regexCity.test(input.value) ? input.className = '' : input.className = 'error'
+    } else if (input.id === 'email') {
+        errorMessage.textContent = regexMail.test(input.value) ? '' : "Veuillez saisir un mail valide"
+        regexMail.test(input.value) ? input.className = '' : input.className = 'error'
+    }
 }
 
 /**
@@ -208,7 +266,23 @@ async function main() {
     deleteItems.forEach((item) => {
         item.addEventListener('click', confirmRemove)
     })
+
+    // Form validation on each click on submit button
+    submitButton.addEventListener('click', () => {
+        validateContactForm()
+    })
+
+    // If all values are ok so
+    contactForm.addEventListener('submit', (event) => {
+        event.preventDefault()
+        // Form is validated
+        if (validateContactForm()) {
+            // passer à la suite
+            console.log('submit')
+        }
+
+    })
+
 }
 
 main()
-validateContactForm()
