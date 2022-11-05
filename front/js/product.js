@@ -38,13 +38,12 @@ function main() {
             let productName = document.getElementById('title').innerText
 
             let productToAddInCart = {
-                "id": productId,
-                "color": colorsParent.value,
-                "quantity": Number(quantity.value),
-                "name": productName,
-                // "price": Number(document.getElementById('price').innerText),
-                "imageUrl": document.querySelector('.item__img img').getAttribute('src'),
-                "altTxt": document.querySelector('.item__img img').getAttribute('alt')
+                id: productId,
+                color: colorsParent.value,
+                quantity: Number(quantity.value),
+                name: productName,
+                imageUrl: document.querySelector('.item__img img').getAttribute('src'),
+                altTxt: document.querySelector('.item__img img').getAttribute('alt')
             }
 
             let productAdded = addProductToCart(productToAddInCart)

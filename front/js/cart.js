@@ -206,9 +206,9 @@ function validateFormField(input) {
 
     // Regex rules https://www.programiz.com/javascript/regex
     // Tests made on https://regex101.com/r/YDB9CJ/1
-    let regexCharacters = new RegExp('^[a-zÀ-ú-\'\\s\\i]+$') // \\i for case insensitive
-    let regexAddress = new RegExp('^[a-zÀ-ú0-9,\\-\'\\s\\i]+$') // 6, lotissement de la petite Oie match. \s for whitespaces
-    let regexCity = new RegExp('^[a-zÀ-ú\'-\\s\\i]+$')
+    let regexCharacters = new RegExp('^[a-zA-ZÀ-ú-\'\\s]+$')
+    let regexAddress = new RegExp('^[a-zA-ZÀ-ú0-9,\\-\'\\s]+$') // 6, lotissement de la petite Oie match. \s for whitespaces
+    let regexCity = new RegExp('^[a-zA-ZÀ-ú\'-\\s]+$')
     let regexMail = new RegExp('[a-z0-9.-]+@[a-z]+\\.[a-z]{2,3}')
 
     let errorMessage = input.nextElementSibling
@@ -303,11 +303,11 @@ async function main() {
 
             // Prepare Datas before send them
             let contact = {
-                'firstName': document.getElementById('firstName').value,
-                'lastName': document.getElementById('lastName').value,
-                'address': document.getElementById('address').value,
-                'city': document.getElementById('city').value,
-                'email': document.getElementById('email').value
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                email: document.getElementById('email').value
             }
 
             let products = cart.map(product => product.id)
