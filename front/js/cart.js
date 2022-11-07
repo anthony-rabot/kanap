@@ -328,8 +328,8 @@ async function main() {
                 let orderResponse = await sendOrder(datasToSend)
 
                 if (orderResponse) {
-                    //localStorage.clear()
-                    //window.location.replace("./confirmation.html?order_id=" + orderResponse.orderId);
+                    localStorage.clear()
+                    window.location.replace("./confirmation.html?order_id=" + orderResponse.orderId);
                 }
             } else {
                 alert('Votre panier est vide, veuillez ajouter des produits dans le panier pour pouvoir passer votre commande')
