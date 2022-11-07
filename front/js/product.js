@@ -1,4 +1,4 @@
-import {displayTotalCartQuantity, getLocalStorage} from './script.js'
+import {displayTotalCartQuantity, getLocalStorage} from './utils.js'
 
 const params = (new URL(document.location)).searchParams
 let productId = params.get('id')
@@ -143,16 +143,6 @@ function validateProductForm() {
     return colorsParent.value !== "" && quantity.checkValidity()
 }
 
-// /**
-//  * Get LocalStorage
-//  * @return {Array} Empty if LocalStorage is not initialised or with products objects
-//  */
-// function getLocalStorage() {
-//     let ordersInLocalStorage = localStorage.getItem("orders")
-//
-//     return ordersInLocalStorage != null ? JSON.parse(ordersInLocalStorage) : []
-// }
-
 /**
  * Add product to Cart or update quantity if already present (LocalStorage)
  * Check for total quantity (has not to exceed 100)
@@ -199,26 +189,6 @@ function addProductToCart(productToAdd) {
 
     return productToAdd
 }
-
-// /**
-//  * Calculate total quantity and display on cart menu item
-//  */
-// function displayTotalCartQuantity() {
-//
-//     let cart = getLocalStorage()
-//     let totalQuantity = 0
-//
-//     // If there is product objects in localStorage
-//     if (cart.length > 0) {
-//
-//         totalQuantity = cart.reduce((accumulator, product) => {
-//             return accumulator + product.quantity
-//         }, 0)
-//
-//         // Display total information
-//         document.querySelector('.menu nav a:last-child li').textContent = 'Panier (' + totalQuantity.toString() + ')'
-//     }
-// }
 
 // Execute main function
 main()

@@ -1,17 +1,9 @@
+import {getLocalStorage} from './utils.js'
+
 const cartContainer = document.getElementById('cart__items')
 let cartLineHtmlTemplate = ''
 const submitButton = document.getElementById('order')
 const contactForm = document.querySelector('.cart__order__form')
-
-/**
- * Get LocalStorage
- * @return {Array} Empty if LocalStorage is not initialised or with products objects
- */
-function getLocalStorage() {
-    let ordersInLocalStorage = localStorage.getItem("orders")
-
-    return ordersInLocalStorage != null ? JSON.parse(ordersInLocalStorage) : []
-}
 
 /**
  * Call API to get product information
@@ -106,6 +98,9 @@ async function calcTotal() {
 async function updateQuantity(event) {
     let newQuantity = event.target.value
 
+    console.log(newQuantity)
+    console.log(typeof newQuantity)
+
     // Get Id and color of product objet to update
     let domProduct = event.target.closest('article')
     let productId = domProduct.dataset.id
@@ -116,11 +111,15 @@ async function updateQuantity(event) {
     let productToUpdate = cart.find(product => product.id === productId && product.color === productColor)
 
     // Update DOM element and localStorage
-    if (newQuantity > 100) {
+    if (Number(newQuantity) > 100) {
         event.target.value = 100
         event.target.setAttribute('value', 100) // DOM
         productToUpdate.quantity = 100 // localStorage
         alert('Vous ne pouvez pas en commander plus de 100')
+    } else if (Number(newQuantity) === 0) {
+        event.target.setAttribute('value', 1) // DOM
+        event.target.value = 1
+        alert('Vous devez garder au moins 1 produit. Pour le supprimer cliquez sur Supprimer')
     } else {
         event.target.setAttribute('value', newQuantity)
         productToUpdate.quantity = Number(newQuantity)
@@ -272,6 +271,8 @@ async function main() {
         for (let product of cart) {
             await displayProductCartLine(product)
         }
+    } else {
+        cartContainer.innerHTML = '<p>Votre panier est vide.</p>'
     }
 
     // Calculate Total
