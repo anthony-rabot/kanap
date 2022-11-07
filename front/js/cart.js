@@ -312,20 +312,29 @@ async function main() {
                 email: document.getElementById('email').value
             }
 
-            let products = cart.map(product => product.id)
+            // Reload final localStorage to be sure products are in before sending form
+            let finalCart = getLocalStorage()
 
-            let datasToSend = JSON.stringify({
-                'contact': contact,
-                'products': products
-            })
+            if (finalCart.length > 0) {
+                let products = finalCart.map(product => product.id)
+                console.log(products)
 
-            // Send request to API and wait for orderId in response
-            let orderResponse = await sendOrder(datasToSend)
+                let datasToSend = JSON.stringify({
+                    'contact': contact,
+                    'products': products
+                })
 
-            if (orderResponse) {
-                localStorage.clear()
-                window.location.replace("./confirmation.html?order_id=" + orderResponse.orderId);
+                // Send request to API and wait for orderId in response
+                let orderResponse = await sendOrder(datasToSend)
+
+                if (orderResponse) {
+                    //localStorage.clear()
+                    //window.location.replace("./confirmation.html?order_id=" + orderResponse.orderId);
+                }
+            } else {
+                alert('Votre panier est vide, veuillez ajouter des produits dans le panier pour pouvoir passer votre commande')
             }
+
         }
     })
 }
